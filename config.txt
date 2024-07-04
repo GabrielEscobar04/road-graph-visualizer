@@ -1,0 +1,19 @@
+[Graph Settings]
+city=barcelona
+
+# Window Settings
+windowWidth=1280
+windowHeight=720
+windowTitle=Graph Visualizer
+
+# Data Files
+nodesFile=data/nodes.txt
+edgesFile=data/edges.txt
+
+# Camera Settings
+cameraFov=45.0
+
+# Graph Visualization Settings
+nodeSize=1.0
+edgeSize=1.0
+backgroundColor=0.7,0.7,0.7

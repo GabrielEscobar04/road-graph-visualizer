@@ -1,0 +1,14 @@
+# Folders
+**/build
+**/cache
+**/__pycache__
+
+# Code
+*.o
+*.so
+*.lib
+*.dll
+
+# Visual studio code
+**/.vscode
+**/.venv
