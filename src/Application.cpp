@@ -98,24 +98,26 @@ void Application::run()
 
 
 /* PRIVATE METHODS */
-std::vector<float> Application::getNodesBuffer(const std::unordered_map<int, glm::vec3>& nodes) {
+std::vector<float> Application::getNodesBuffer(const std::unordered_map<int, Node>& nodes) {
     std::vector<float> vertices;
-    for (const auto& node : nodes) {
-        glm::vec3 position = node.second;
+    for (const auto& nodePair : nodes) {
+        Node node = nodePair.second;
 
-        vertices.push_back(position.x);
-        vertices.push_back(position.y);
-        vertices.push_back(position.z);
+        vertices.push_back(node.position.x);
+        vertices.push_back(node.position.y);
+        vertices.push_back(node.position.z);
     }
 
     return vertices;
 }
 
-std::vector<float> Application::getEdgesBuffer(const std::vector<Road>& roads) {
+std::vector<float> Application::getEdgesBuffer(const std::unordered_map<int, Road>& roads) {
     std::vector<float> vertices;
-    for (const auto& edge : roads) {
-        glm::vec3 positionFrom = roadGraph->getNodePosition(edge.from);
-        glm::vec3 positionTo = roadGraph->getNodePosition(edge.to);
+    for (const auto& roadPair : roads) {
+        Road road = roadPair.second;
+
+        glm::vec3 positionFrom = roadGraph->getNodePosition(road.from);
+        glm::vec3 positionTo = roadGraph->getNodePosition(road.to);
 
         vertices.push_back(positionFrom.x); 
         vertices.push_back(positionFrom.y); 

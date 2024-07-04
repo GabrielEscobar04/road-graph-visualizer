@@ -39,6 +39,7 @@ RoadGraph::RoadGraph(const std::string& nodesFile, const std::string& edgesFile)
     }
 
     // Add edges
+    int id = 0;
     while (std::getline(edgesStream, line)) {
         std::istringstream iss(line);
         int idNode1, idNode2;
@@ -50,32 +51,31 @@ RoadGraph::RoadGraph(const std::string& nodesFile, const std::string& edgesFile)
             continue;
         }
         
-        addRoad(idNode1, idNode2, meters, maxSpeed, lanes);
+        addRoad(id, idNode1, idNode2, meters, maxSpeed, lanes);
+        ++id;
 
         if (!oneWay) {
-            addRoad(idNode2, idNode1, meters, maxSpeed, lanes);
+            addRoad(id, idNode2, idNode1, meters, maxSpeed, lanes);
+            ++id;
         }
     }
 
     center = (minCoords + maxCoords) / 2.0f;
 }
 
-const std::unordered_map<int, glm::vec3>& RoadGraph::getNodes() const {
+const std::unordered_map<int, Node>& RoadGraph::getNodes() const {
     return nodes;
 }
 
-const std::vector<Road>& RoadGraph::getRoads() const {
+const std::unordered_map<int, Road>& RoadGraph::getRoads() const {
     return roads;
-}
-
-const std::unordered_map<std::string, Path>& RoadGraph::getPaths() const {
-    return paths;
 }
 
 glm::vec3 RoadGraph::getNodePosition(int id) const {
     auto it = nodes.find(id);
     if (it != nodes.end()) {
-        return it->second;
+        Node node = it->second;
+        return node.position;
     }
     throw std::runtime_error("Node not found");
 }
@@ -97,12 +97,12 @@ bool RoadGraph::roadExists(int from, int to) const {
     return false;
 }
 
-bool RoadGraph::nodeExists(int id) const {
-    return nodes.find(id) != nodes.end();
+bool RoadGraph::roadExists(int id) const {
+    return roads.find(id) != roads.end();
 }
 
-bool RoadGraph::pathExists(const std::string& pathName) const {
-    return paths.find(pathName) != paths.end();
+bool RoadGraph::nodeExists(int id) const {
+    return nodes.find(id) != nodes.end();
 }
 
 void RoadGraph::addNode(int id, const glm::vec3& position) {
@@ -110,25 +110,11 @@ void RoadGraph::addNode(int id, const glm::vec3& position) {
     updateBoundingBox(position);
 }
 
-void RoadGraph::addRoad(int from, int to, float meters, float maxSpeed, int lanes) {
+void RoadGraph::addRoad(int id, int from, int to, float meters, float maxSpeed, int lanes) {
     adjacentNodes[from].push_back(to);
-    roads.push_back({from, to, meters, maxSpeed, lanes});
-}
 
-void RoadGraph::addPath(const std::string& pathName, const std::vector<int>& nodeIds) {
-    if (paths.find(pathName) != paths.end()) {
-        throw std::runtime_error("Path with this name already exists");
-    }
-    paths[pathName] = Path{nodeIds};
-}
-
-void RoadGraph::removePath(const std::string& pathName) {
-    auto it = paths.find(pathName);
-    if (it != paths.end()) {
-        paths.erase(it);
-    } else {
-        throw std::runtime_error("Path not found");
-    }
+    Road road = Road(from, to, meters, maxSpeed, lanes);
+    roads[id] = road;
 }
 
 void RoadGraph::updateBoundingBox(const glm::vec3& position) {

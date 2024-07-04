@@ -49,6 +49,6 @@ private:
 
     void handleInput();
     void updateCamera();
-    std::vector<float> getNodesBuffer(const std::unordered_map<int, glm::vec3>& nodes);
-    std::vector<float> getEdgesBuffer(const std::vector<Road>& roads);
+    std::vector<float> getNodesBuffer(const std::unordered_map<int, Node>& nodes);
+    std::vector<float> getEdgesBuffer(const std::unordered_map<int, Road>& roads);
 };
